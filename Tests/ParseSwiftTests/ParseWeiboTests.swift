@@ -92,16 +92,16 @@ class ParseWeiboTests: XCTestCase {
 
     func testAuthenticationKeys() throws {
         let secureAuthData = ParseWeibo<User>
-            .AuthenticationKeys.code.makeDictionary(code: "authorization-code",
-                                                     redirectURI: "https://example.com/callback")
+            .AuthenticationKeys.makeDictionary(code: "authorization-code",
+                                               redirectURI: "https://example.com/callback")
         XCTAssertEqual(secureAuthData, [
             "code": "authorization-code",
             "redirect_uri": "https://example.com/callback"
         ])
 
         let insecureAuthData = ParseWeibo<User>
-            .AuthenticationKeys.id.makeDictionary(id: "testing",
-                                                  accessToken: "access-token")
+            .AuthenticationKeys.makeDictionary(id: "testing",
+                                               accessToken: "access-token")
         XCTAssertEqual(insecureAuthData, [
             "id": "testing",
             "access_token": "access-token"
@@ -115,16 +115,16 @@ class ParseWeiboTests: XCTestCase {
                                 "access_token": "access-token"]
         let authDataWrong = ["code": "authorization-code"]
 
-        XCTAssertTrue(ParseWeibo<User>.AuthenticationKeys.id.verifyMandatoryKeys(authData: secureAuthData))
-        XCTAssertTrue(ParseWeibo<User>.AuthenticationKeys.id.verifyMandatoryKeys(authData: insecureAuthData))
-        XCTAssertFalse(ParseWeibo<User>.AuthenticationKeys.id.verifyMandatoryKeys(authData: authDataWrong))
+        XCTAssertTrue(ParseWeibo<User>.AuthenticationKeys.verifyMandatoryKeys(authData: secureAuthData))
+        XCTAssertTrue(ParseWeibo<User>.AuthenticationKeys.verifyMandatoryKeys(authData: insecureAuthData))
+        XCTAssertFalse(ParseWeibo<User>.AuthenticationKeys.verifyMandatoryKeys(authData: authDataWrong))
     }
 
     func testLogin() throws {
         var serverResponse = LoginSignupResponse()
         let authData = ParseWeibo<User>
-            .AuthenticationKeys.code.makeDictionary(code: "authorization-code",
-                                                    redirectURI: "https://example.com/callback")
+            .AuthenticationKeys.makeDictionary(code: "authorization-code",
+                                               redirectURI: "https://example.com/callback")
         serverResponse.username = "hello"
         serverResponse.password = "world"
         serverResponse.objectId = "yarr"
@@ -169,8 +169,8 @@ class ParseWeiboTests: XCTestCase {
     func testLoginWithInsecureAuthData() throws {
         var serverResponse = LoginSignupResponse()
         let authData = ParseWeibo<User>
-            .AuthenticationKeys.id.makeDictionary(id: "testing",
-                                                  accessToken: "access-token")
+            .AuthenticationKeys.makeDictionary(id: "testing",
+                                               accessToken: "access-token")
         serverResponse.username = "hello"
         serverResponse.password = "world"
         serverResponse.objectId = "yarr"

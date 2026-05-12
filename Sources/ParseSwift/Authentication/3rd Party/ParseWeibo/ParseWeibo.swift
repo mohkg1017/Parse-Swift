@@ -28,8 +28,8 @@ public struct ParseWeibo<AuthenticatedUser: ParseUser>: ParseAuthentication {
         /// - parameter code: Required authorization code from Weibo.
         /// - parameter redirectURI: Required redirect URI registered for Weibo.
         /// - returns: authData dictionary.
-        func makeDictionary(code: String,
-                            redirectURI: String) -> [String: String] {
+        static func makeDictionary(code: String,
+                                   redirectURI: String) -> [String: String] {
             [AuthenticationKeys.code.rawValue: code,
              AuthenticationKeys.redirectURI.rawValue: redirectURI]
         }
@@ -38,8 +38,8 @@ public struct ParseWeibo<AuthenticatedUser: ParseUser>: ParseAuthentication {
         /// - parameter id: Required id for the user.
         /// - parameter accessToken: Required access token for Weibo.
         /// - returns: authData dictionary.
-        func makeDictionary(id: String,
-                            accessToken: String) -> [String: String] {
+        static func makeDictionary(id: String,
+                                   accessToken: String) -> [String: String] {
             [AuthenticationKeys.id.rawValue: id,
              AuthenticationKeys.accessToken.rawValue: accessToken]
         }
@@ -47,7 +47,7 @@ public struct ParseWeibo<AuthenticatedUser: ParseUser>: ParseAuthentication {
         /// Verifies all mandatory keys are in authData.
         /// - parameter authData: Dictionary containing key/values.
         /// - returns: **true** if all the mandatory keys are present, **false** otherwise.
-        func verifyMandatoryKeys(authData: [String: String]) -> Bool {
+        static func verifyMandatoryKeys(authData: [String: String]) -> Bool {
             let hasSecureKeys = authData[AuthenticationKeys.code.rawValue] != nil &&
                 authData[AuthenticationKeys.redirectURI.rawValue] != nil
             let hasInsecureKeys = authData[AuthenticationKeys.id.rawValue] != nil &&
@@ -79,8 +79,8 @@ public extension ParseWeibo {
                options: API.Options = [],
                callbackQueue: DispatchQueue = .main,
                completion: @escaping (Result<AuthenticatedUser, ParseError>) -> Void) {
-        login(authData: AuthenticationKeys.code.makeDictionary(code: code,
-                                                               redirectURI: redirectURI),
+        login(authData: AuthenticationKeys.makeDictionary(code: code,
+                                                          redirectURI: redirectURI),
               options: options,
               callbackQueue: callbackQueue,
               completion: completion)
@@ -99,8 +99,8 @@ public extension ParseWeibo {
                options: API.Options = [],
                callbackQueue: DispatchQueue = .main,
                completion: @escaping (Result<AuthenticatedUser, ParseError>) -> Void) {
-        login(authData: AuthenticationKeys.id.makeDictionary(id: id,
-                                                             accessToken: accessToken),
+        login(authData: AuthenticationKeys.makeDictionary(id: id,
+                                                          accessToken: accessToken),
               options: options,
               callbackQueue: callbackQueue,
               completion: completion)
@@ -110,7 +110,7 @@ public extension ParseWeibo {
                options: API.Options = [],
                callbackQueue: DispatchQueue = .main,
                completion: @escaping (Result<AuthenticatedUser, ParseError>) -> Void) {
-        guard AuthenticationKeys.id.verifyMandatoryKeys(authData: authData) else {
+        guard AuthenticationKeys.verifyMandatoryKeys(authData: authData) else {
             callbackQueue.async {
                 completion(.failure(.init(code: .unknownError,
                                           message: "Should have authData consisting of keys \"code\" and \"redirectURI\", or \"id\" and \"accessToken\".")))
@@ -141,8 +141,8 @@ public extension ParseWeibo {
               options: API.Options = [],
               callbackQueue: DispatchQueue = .main,
               completion: @escaping (Result<AuthenticatedUser, ParseError>) -> Void) {
-        link(authData: AuthenticationKeys.code.makeDictionary(code: code,
-                                                              redirectURI: redirectURI),
+        link(authData: AuthenticationKeys.makeDictionary(code: code,
+                                                         redirectURI: redirectURI),
              options: options,
              callbackQueue: callbackQueue,
              completion: completion)
@@ -161,8 +161,8 @@ public extension ParseWeibo {
               options: API.Options = [],
               callbackQueue: DispatchQueue = .main,
               completion: @escaping (Result<AuthenticatedUser, ParseError>) -> Void) {
-        link(authData: AuthenticationKeys.id.makeDictionary(id: id,
-                                                            accessToken: accessToken),
+        link(authData: AuthenticationKeys.makeDictionary(id: id,
+                                                         accessToken: accessToken),
              options: options,
              callbackQueue: callbackQueue,
              completion: completion)
@@ -172,7 +172,7 @@ public extension ParseWeibo {
               options: API.Options = [],
               callbackQueue: DispatchQueue = .main,
               completion: @escaping (Result<AuthenticatedUser, ParseError>) -> Void) {
-        guard AuthenticationKeys.id.verifyMandatoryKeys(authData: authData) else {
+        guard AuthenticationKeys.verifyMandatoryKeys(authData: authData) else {
             callbackQueue.async {
                 completion(.failure(.init(code: .unknownError,
                                           message: "Should have authData consisting of keys \"code\" and \"redirectURI\", or \"id\" and \"accessToken\".")))
